@@ -1,5 +1,6 @@
 package org.projectspinoza.twittergrapher.importers;
 
+import io.vertx.core.json.DecodeException;
 import io.vertx.core.json.JsonObject;
 
 import java.io.BufferedReader;
@@ -27,6 +28,7 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.mongodb.Block;
@@ -113,8 +115,7 @@ public class DataImporter {
 				String query_like = " LIKE '%" + query_terms[0] + "%' ";
 
 				for (int i = 1; i < query_terms.length; i++) {
-					query_like.concat("or "
-							+ this.mysql_cred.get("data_column").toString()
+					query_like.concat("or " + this.mysql_cred.get("data_column").toString()
 							+ " LIKE '%" + query_terms[i] + "%' ");
 				}
 
@@ -132,8 +133,12 @@ public class DataImporter {
 				while (results_set.next()) {
 					String tweet = results_set.getString(this.mysql_cred.get(
 							"data_column").toString());
-					response_list.add(new JSONObject(tweet).get("text")
-							.toString());
+					try{
+						response_list.add(new JSONObject(tweet).get("text")
+								.toString());
+					} catch (JSONException | DecodeException e) {
+					}
+
 				}
 
 			} else {
@@ -172,8 +177,11 @@ public class DataImporter {
 
 		@Override
 		public void apply(Document document) {
-			tweet = new JsonObject(document.getString("tweet"));
-			response_list_str_container.add(tweet.getString("text"));
+			try{
+				tweet = new JsonObject(document.getString("tweet"));
+				response_list_str_container.add(tweet.getString("text"));
+			} catch (JSONException | DecodeException e) {
+			}
 		}
 	}
 
@@ -186,7 +194,12 @@ public class DataImporter {
 			reader = new BufferedReader(new FileReader(new File(input_file)));
 			String line;
 			while ((line = reader.readLine()) != null) {
-				String tweet_text = new JsonObject(line).getString("text");
+				String tweet_text = null;
+				try {
+					tweet_text = new JsonObject(line).getString("text");
+				} catch (JSONException | DecodeException e) {
+				}
+				 
 				boolean contains_keyword = false;
 				for (String keyword : search_keywords) {
 					if(tweet_text.contains(keyword)){
@@ -268,5 +281,4 @@ public class DataImporter {
 	public void setElasticSearchClient(TransportClient elasticSearchClient) {
 		this.elasticSearchClient = elasticSearchClient;
 	}
-
 }

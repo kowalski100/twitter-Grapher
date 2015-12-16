@@ -165,10 +165,15 @@ public class GraphServer {
 		//generating graph...
 		String type = "sigmaGraph";
 		GraphFactory graphFactory = new GraphFactory();
-		TwitterGraph graph = graphFactory.getGraph(type,layout_settings);
-		Map<String, Object> result = new HashMap<String, Object>();
-		result.put("nodes", graph);
-		routingContext.response().end(new JsonObject(result).toString());
+		Map<String, Object> result = null;
+		try {
+			TwitterGraph graph = graphFactory.getGraph(type,layout_settings);
+			result = new HashMap<String, Object>();
+			result.put("nodes", graph);
+			routingContext.response().end(new JsonObject(result).toString());
+		}catch (NullPointerException ex){
+			routingContext.response().end(new JsonObject(result).toString());
+		}
 	}
 
 	private boolean serverListening(String host, int port) {

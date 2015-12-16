@@ -26,7 +26,7 @@ public class Main {
 		boolean app_deployed = (graph_server == null)? false:graph_server.deployServer();
 		
 		if (app_deployed) {
-			System.out.println("App server deployed successfully at port "+app_port);
+			System.out.println("App server deployed successfully at port " + app_port);
 		}else {
 			System.out.println("Error deploying App server.");
 		}
@@ -47,6 +47,7 @@ public class Main {
 	private static JsonObject getConfigJson(String file) {
 		String conf_json_str;
 		JsonObject conf_json = null;
+		
 		try {
 			conf_json_str = new String(Files.readAllBytes(Paths.get(file)));
 			conf_json = new JsonObject(conf_json_str);

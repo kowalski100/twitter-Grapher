@@ -37,18 +37,3 @@ a {
   text-decoration: none;
   display: inline;
 }
-.legend{
-  color: silver;
-}
-.span{
-  color: silver;
-  display:inline-block;
-  margin-right:10px;
-  margin-left:10px;  
-}
-#searchField, #nodecentrality, #pagerankthreshhold,
-#datasource, #lt, #nodesizeby{
-  padding-left: 5px;
-  padding-top: 3px;
-  padding-bottom: 3px;
-}

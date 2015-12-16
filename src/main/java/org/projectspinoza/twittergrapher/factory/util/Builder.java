@@ -42,6 +42,7 @@ import de.uni_leipzig.informatik.asv.gephi.chinesewhispers.ChineseWhispersCluste
 
 public class Builder {
 
+	@SuppressWarnings("unchecked")
 	public static Graph build(boolean IS_DIRECTED, Map<String, Object> settings) {
 		ProjectController pc = Lookup.getDefault().lookup(
 				ProjectController.class);
@@ -78,23 +79,37 @@ public class Builder {
 
 		// Getting layout Options
 		JsonObject jobject = new JsonObject(settings.get("la").toString());
-		Map inner = jobject.getMap();
-
+		Map<String, Object> inner = jobject.getMap();
+		
+		JsonObject sources_cred_json = (JsonObject) ((Map<String, Object>) settings.get("settings")).get("sources_cred");
+		String input_file = sources_cred_json.getString("file");
+		String data_source = ((Map<String, Object>) settings.get("settings")).get("source_selected").toString();
+		
 		// Import file
-		Container container;
+		Container container = null;
+		
 		try {
-			if (DataSourceType.contains(((Map<String, Object>) settings
-					.get("settings")).get("source_selected").toString())) {
-				container = (new DataSourceImporter())
-						.importDataSource(settings);
-			} else {
-				File file = new File(settings.get("input_file").toString());
+			
+			if (DataSourceType.contains(data_source)) {
+				container = (new DataSourceImporter()).importDataSource(settings);
+				if (container == null){
+					System.out.println("Error generating graph from "+input_file);
+				}
+			} else if (data_source.equals("graphfile")){
+				File file = new File(input_file);
 				container = importController.importFile(file);
+				if (container == null){
+					System.out.println("No graph found in "+input_file+". Make sure you are using correct graph file format.");
+				}
+			}else {
+				System.out.println ("Unsupported file format.");
+				return null;
 			}
 			// container.getLoader().setEdgeDefault(EdgeDefault.DIRECTED); //
 			// Force
 			// DIRECTED
 		} catch (Exception ex) {
+			
 			ex.printStackTrace();
 			return null;
 		}
