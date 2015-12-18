@@ -58,8 +58,8 @@ public class GraphServer {
 		router = Router.router(vertx);
 
 		
-		// static resources CSS/JS files
-		router.getWithRegex(".*/css/.*|.*/js/.*").handler(
+		// static resources CSS/JS/Images files
+		router.getWithRegex(".*/css/.*|.*/js/.*|.*/images/.*").handler(
 				StaticHandler.create("webroot").setCachingEnabled(false));
 		
 		//routes

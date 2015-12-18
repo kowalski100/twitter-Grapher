@@ -12,7 +12,52 @@ $(document).ready(function(){
 		isGraphfile = false;		
 	}
 });
-});
+  
+	$('.nodecentrality').jRange({
+		from: 0,
+		to: 100,
+		step: 1,
+		scale: [0,25,50,75,100],
+		format: '%s',
+		width: 300,
+		snap : true
+	});
+	
+	
+	$('.pagerank').jRange({
+		from: 0,
+		to: 100,
+		step: 1,
+		scale: [0,25,50,75,100],
+		format: '%s',
+		width: 300,
+		snap : true
+	});
+	
+	$('.neighborcount').jRange({
+		from: 0,
+		to: 100,
+		step: 1,
+		scale: [0,25,50,75,100],
+		format: '%s',
+		width: 300,
+		snap : true,
+		//ondragend: fucntion(value) {
+			//alert(value);
+	//	}
+		
+	});
+  
+  sigma.classes.graph.addMethod('neighbors', function(nodeId) {
+  var k,
+  neighbors = {},
+  index = this.allNeighborsIndex[nodeId] || {};
+  for (k in index)
+    neighbors[k] = this.nodesIndex[k];
+    return neighbors;
+  });
+  
+  
 	document.body.style.backgroundColor = color;
    $('#clickbtn').click(function(event) {
     event.preventDefault();
@@ -24,11 +69,15 @@ $(document).ready(function(){
   	}
 //  Field Values
 	var searchFieldValue = $("#searchField").val();
-    var nodecentralityValue = $("#nodecentrality").val();
-    var pagerankthreshholdValue = $("#pagerankthreshhold").val();
+    var nodecentralityValue = $(".nodecentrality").val();
+    var pagerankthreshholdValue = $(".pagerank").val();
+	var neighborcount = $(".neighborcount").val();
     var layoutValue=$('#lt').val();
     var nodesizebyvalue=$('#nodesizeby').val();
     var datasource=$('#datasource').val();
+	 console.log(nodecentralityValue);
+	 console.log(pagerankthreshholdValue);
+	 console.log(neighborcount);
     function emptyfieldvalue(value){
 		value = "null";
 		return value;
@@ -146,5 +195,38 @@ $(document).ready(function(){
    for (var i in totalEdges) {
  	 totalEdges[i].type = 'curve';
  	}
-   s.refresh();
+   s.graph.nodes().forEach(function(n) {
+      n.originalColor = n.color;
+      n.originalLabel = n.label;
+   });
+   s.graph.edges().forEach(function(e) {
+     e.originalColor = e.color;
+   });
+   
+  s.bind('overNode', function(e){
+    var nodeId = e.data.node.id;
+    toKeep = s.graph.neighbors(nodeId);
+    toKeep[nodeId] = e.data.node;
+
+    s.graph.nodes().forEach(function(n) {
+      if (toKeep[n.id]){
+        n.color = n.originalColor;
+        n.label = n.originalLabel;
+      }else{
+        n.color = 'blue';
+        n.label = "";
+      }
+
+    });
+
+    s.graph.edges().forEach(function(e) {
+      if (toKeep[e.source] && toKeep[e.target])
+        e.color ='green';
+      else
+       e.color = e.originalColor;
+    });
+
+    s.refresh();
+  });
    }
+ });  
