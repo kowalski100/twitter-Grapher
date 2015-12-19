@@ -60,6 +60,7 @@ $(document).ready(function(){
   
 	document.body.style.backgroundColor = color;
    $('#clickbtn').click(function(event) {
+   	$("#loader_img").css("visibility", "visible");
     event.preventDefault();
   	if($('#filters').css('display')=="block"){
   	// $("#filters").css("display", "none");
@@ -134,10 +135,7 @@ $(document).ready(function(){
     else
 	{
 	    nonemptyfieldbordercolor('#datasource')
-	}
-	
-	
-	
+	}	
 	
 	/*<![CDATA[*/
      if((searchFieldValue!='' && datasource != "null") || isGraphfile){
@@ -145,7 +143,7 @@ $(document).ready(function(){
     type: "get",
    // url: "http://localhost:8080/graph?searchField="+$("#searchField").val(),
    url: "http://localhost:8080/ajax",
-   data:{searchField:searchFieldValue,nc:nodecentralityValue,prt:pagerankthreshholdValue,layouttype:layoutValue,NodeSizeBy:nodesizebyvalue,datasource:datasource,ls:JSON.stringify(lssettings)},
+   data:{searchField:searchFieldValue,nc:nodecentralityValue,prt:pagerankthreshholdValue,layouttype:layoutValue,NodeSizeBy:nodesizebyvalue,NeighborCountRange:neighborcount,datasource:datasource,ls:JSON.stringify(lssettings)},
      async : true,
     beforeSend: function(xhr) { 
     },
@@ -165,7 +163,7 @@ $(document).ready(function(){
 	  $(".message").css("display","block");
 	  $("#container").empty();
 	  }
-	  
+	  $("#loader_img").css("visibility", "hidden");
     },
     error: function(a, b, c){
     	$(".message").html("Internal server error");
@@ -228,5 +226,6 @@ $(document).ready(function(){
 
     s.refresh();
   });
+  s.refresh();
    }
  });  

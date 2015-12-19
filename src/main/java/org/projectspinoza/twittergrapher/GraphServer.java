@@ -58,7 +58,7 @@ public class GraphServer {
 		router = Router.router(vertx);
 
 		
-		// static resources CSS/JS/Images files
+		// static resources CSS/JS files
 		router.getWithRegex(".*/css/.*|.*/js/.*|.*/images/.*").handler(
 				StaticHandler.create("webroot").setCachingEnabled(false));
 		
@@ -146,7 +146,12 @@ public class GraphServer {
 		} else {
 			layout_settings.put("nct", 0);
 		}
-
+		
+		if(!parameters.get("NeighborCountRange").contains("null")){
+			layout_settings.put("neighborcountrange",Double.parseDouble(parameters.get("NeighborCountRange")));
+		}else{
+			layout_settings.put("neighborcountrange",0);
+		}
 		if (!parameters.get("prt").contains("null")) {
 			layout_settings.put("prt", Integer.parseInt(parameters.get("prt")));
 		} else {

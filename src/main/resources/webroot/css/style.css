@@ -33,6 +33,11 @@ body{
   /*display: none;*/
   margin: 10px;
 }
+
+#loader_img {
+	visibility: hidden;
+}
+
 a {
   color: #ffffff;
   text-decoration: none;
