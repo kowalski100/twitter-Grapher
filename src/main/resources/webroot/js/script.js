@@ -1,6 +1,71 @@
 
+
+
 $(document).ready(function(){
-	
+
+// document.addEventListener('contextmenu', function(e) {
+//   e.preventDefault();
+// });
+
+// var mouseX, mouseY;
+
+// $(document).mousemove(function(e) {
+//     mouseX = e.pageX;
+//     mouseY = e.pageY;
+// }).mouseover(); 
+
+
+var queryPanelDisplayed = true;
+
+$( "#submitQueryFormShowHide" ).click(function() {
+
+  $( ".submitQueryForm" ).animate({
+    opacity: 1,
+    left: "+=50",
+    height: "toggle"
+  }, 1500, function() {
+
+    if (queryPanelDisplayed === true) {
+      $('#submitQueryFormShowHide img').attr("src","images/arrow-down.png");
+        queryPanelDisplayed = false;
+    }else {
+        $('#submitQueryFormShowHide img').attr("src","images/arrow-up.png");
+        queryPanelDisplayed = true;
+    }
+
+  });
+});
+
+
+var nodePanelDisplayed = false;
+
+$( "#nodeInfoPanel a#nodeInfoShowHide" ).click(function() {
+  $( "#nodeInfo" ).animate({
+    opacity: 1,
+    left: "+=50",
+    width: "toggle"
+  }, 1, function() {
+
+    if (nodePanelDisplayed === true) {
+      $("#nodeInfoPanel a#nodeInfoShowHide img").attr("src","images/arrow-right.png");
+//      $('#nodeInfoPanel a#nodeInfoShowHide').html('&#x203A;');
+        nodePanelDisplayed = false;
+    }else {
+        $("#nodeInfoPanel a#nodeInfoShowHide img").attr("src","images/arrow-left.png");
+        nodePanelDisplayed = true;
+    }
+    
+  });
+});
+
+$('#nodeInfoPanel a#nodeInfoShowHide').click(function(e) {
+    e.preventDefault();
+});
+$('#submitQueryFormShowHide ').click(function(e) {
+    e.preventDefault();
+});
+
+
   $('#datasource').on('change', function() {
 	if(this.value == "graphfile")
 	{
@@ -79,6 +144,8 @@ $(document).ready(function(){
 	 console.log(nodecentralityValue);
 	 console.log(pagerankthreshholdValue);
 	 console.log(neighborcount);
+
+
     function emptyfieldvalue(value){
 		value = "null";
 		return value;
@@ -139,7 +206,7 @@ $(document).ready(function(){
 	
 	/*<![CDATA[*/
      if((searchFieldValue!='' && datasource != "null") || isGraphfile){
-   jQuery.ajax({
+   $.ajax({
     type: "get",
    // url: "http://localhost:8080/graph?searchField="+$("#searchField").val(),
    url: "http://localhost:8080/ajax",
@@ -194,14 +261,48 @@ $(document).ready(function(){
  	 totalEdges[i].type = 'curve';
  	}
    s.graph.nodes().forEach(function(n) {
+
       n.originalColor = n.color;
       n.originalLabel = n.label;
    });
    s.graph.edges().forEach(function(e) {
      e.originalColor = e.color;
    });
-   
+
+s.bind('clickEdge rightClickEdge', function(e) {
+  console.log(e);
+});
+
+s.bind('clickNode rightClickNode', function(e) {
+  console.log(e.data.captor.clientY);
+
+});
+
   s.bind('overNode', function(e){
+
+    $("#nodeInfoTable").empty();
+
+    //papulate table
+    var attr = e.data.node.attributes;
+    var row = "<tr><td>" + 'ID:' + "</td><td>" + e.data.node.id; + "</td></tr>";
+    $('#nodeInfoTable').append(row);
+    var row = "<tr><td>" + 'Label:' + "</td><td>" + e.data.node.label; + "</td></tr>";
+    $('#nodeInfoTable').append(row);
+    var row = "<tr><td>" + 'OriginalLabel:' + "</td><td>" +  e.data.node.originalLabel; + "</td></tr>";
+    $('#nodeInfoTable').append(row);
+    var row = "<tr><td>" + 'Color:' + "</td><td>" + e.data.node.color; + "</td></tr>";
+    $('#nodeInfoTable').append(row);
+    var row = "<tr><td>" + 'B/w Centrality:' + "</td><td>" + attr["Betweenness Centrality"]; + "</td></tr>";
+    $('#nodeInfoTable').append(row);
+    var row = "<tr><td>" + 'Closeness Centrality:' + "</td><td>" + attr["Closeness Centrality"]; + "</td></tr>";
+    $('#nodeInfoTable').append(row);
+    var row = "<tr><td>" + 'PageRank:' + "</td><td>" + attr["PageRank"]; + "</td></tr>";
+    $('#nodeInfoTable').append(row);
+    var row = "<tr><td>" + 'NeighborCount:' + "</td><td>" + attr["NeighborCount"]; + "</td></tr>";
+    $('#nodeInfoTable').append(row);
+    var row = "<tr><td>" + 'Eccentricity:' + "</td><td>" + attr["Eccentricity"]; + "</td></tr>";
+    $('#nodeInfoTable').append(row);
+
     var nodeId = e.data.node.id;
     toKeep = s.graph.neighbors(nodeId);
     toKeep[nodeId] = e.data.node;
@@ -227,5 +328,6 @@ $(document).ready(function(){
     s.refresh();
   });
   s.refresh();
+
    }
  });  

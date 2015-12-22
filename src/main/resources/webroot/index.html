@@ -4,6 +4,7 @@
 		<title>Twitter Grapher</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<link rel="stylesheet" type="text/css" href="css/style.css" />
+
 		<script src="js/jquery-1.11.3.min.js"></script>
 		<script src="js/jquery-migrate-1.2.1.min.js"></script>
 	<!--<script src="js/sigma.min.js"></script>
@@ -65,8 +66,9 @@
 			var color = [[${context.get('color')}]];
 			var ls = [[${context.get('ls')}]];
 			var isGraphfile = false;
+			var nodeLabel = "";
 		</script>
-		<form>
+		<form class="submitQueryForm">
 			<fieldset class="main-fieldset">
 				<legend class="legend">Options</legend>
 				<fieldset id="filters">
@@ -121,6 +123,14 @@
 				<a href="#" id="clickbtn">Submit</a>
 			</fieldset>
 		</form>
+		<a href="#" id="submitQueryFormShowHide"><img src="images/arrow-up.png" title="Show/Hide Search Panel"/></a>
+		<div id="nodeInfoPanel">
+			<div id="nodeInfo">
+				<h3>Node Info:</h3>
+				<table id="nodeInfoTable"></table>
+			</div>
+			<a href="#" id="nodeInfoShowHide"><img src="images/arrow-right.png" title="Show/Hide Node Atrribute Panel"/></a>
+		</div>
 		<div id="container"></div>
 		<script th:inline="javascript" src="js/script.js"></script>
 	</body>
