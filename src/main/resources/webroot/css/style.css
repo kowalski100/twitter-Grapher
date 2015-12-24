@@ -54,7 +54,7 @@ a {
   margin-left:10px;  
 }
 #searchField,
-#datasource, #lt, #nodesizeby{
+#datasource, #layout_type, #nodesizeby{
   padding-left: 5px;
   padding-top: 3px;
   padding-bottom: 3px;

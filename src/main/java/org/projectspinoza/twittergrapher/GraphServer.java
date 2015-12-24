@@ -72,7 +72,12 @@ public class GraphServer {
 		});
 
 		router.getWithRegex("/ajax.*").method(HttpMethod.GET).handler(routingContext -> {
-			ajaxResponseHandler(routingContext);
+			ajaxResponseHandler(routingContext,1);
+		});
+		
+		router.getWithRegex("/processGraph.*").method(HttpMethod.GET).handler(routingContext -> {
+			System.out.println("acquired");
+			ajaxResponseHandler(routingContext,0);
 		});
 
 		// deploy app server on requested port
@@ -109,7 +114,7 @@ public class GraphServer {
 		});
 	}
 
-	private void ajaxResponseHandler(RoutingContext routingContext) {
+	private void ajaxResponseHandler(RoutingContext routingContext, int postProcessing) {
 		
 		MultiMap parameters = routingContext.request().params();
 		Map<String, Object> sources_settings = new HashMap<String, Object>();
@@ -159,7 +164,13 @@ public class GraphServer {
 		}
 		
 		sources_settings.put("source_selected", data_source);
-		sources_settings.put("query_str",parameters.get("searchField").toString());
+		
+		if (postProcessing == 0 && Main.searchValues != null){
+			sources_settings.put("query_str", Main.searchValues.toString());
+		}else {
+			sources_settings.put("query_str", parameters.get("searchField").toString());
+			Main.searchValues = parameters.get("searchField").toString();
+		}
 		sources_settings.put("sources_cred", this.graph_config_json.getJsonObject("data_sources"));
 		layout_settings.put("settings", sources_settings);
 		

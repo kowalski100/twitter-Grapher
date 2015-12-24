@@ -14,9 +14,7 @@ import org.gephi.filters.api.FilterController;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
-import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.Node;
-import org.gephi.graph.api.UndirectedGraph;
 import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.ImportController;
 import org.gephi.io.processor.plugin.DefaultProcessor;
@@ -78,6 +76,7 @@ public class Builder {
 		
 		// Import file
 		Container container = null;
+		System.out.println(data_source);
 		try{
 			if (DataSourceType.contains(data_source)) {
 				container = (new DataSourceImporter()).importDataSource(settings);

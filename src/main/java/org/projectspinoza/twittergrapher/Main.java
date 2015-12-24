@@ -16,9 +16,10 @@ import com.beust.jcommander.ParameterException;
 public class Main {
 
 	static int app_port = 0;
-	
+	static String searchValues;
+
 	public static void main(String[] args) {
-		
+
 		// read command line arguments
 		ConfigParams conf_params = readCommandLineArguments(args);
 		JsonObject graph_conf_json = getConfigJson(conf_params.config_file);

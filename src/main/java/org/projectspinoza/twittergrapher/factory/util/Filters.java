@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.filters.api.FilterController;
 import org.gephi.filters.api.Query;
